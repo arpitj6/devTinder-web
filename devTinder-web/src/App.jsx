@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Body from "./components/Body";
 import Login from "./components/Login";
 import Profile from "./components/Profile";
+import ForgotPassword from "./components/ForgotPassword";
 import appStore from "../utils/appStore";
 import { Provider } from "react-redux";
 import Feed from "./components/Feed";
@@ -21,6 +22,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/connections" element={<Connections />} />
             <Route path="/requests" element={<Requests />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
           </Route>
         </Routes>
       </BrowserRouter>

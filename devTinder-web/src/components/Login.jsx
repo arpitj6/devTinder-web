@@ -15,6 +15,7 @@ const Login = () => {
   const [photoUrl, setPhotoUrl] = useState("");
   const [error, setError] = useState("");
   const [isLoginForm, setIsLoginForm] = useState(true);
+  const [isPasswordForm, setIsPasswordForm] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -243,26 +244,18 @@ const Login = () => {
             className="btn w-full bg-gradient-to-r from-gray-800 to-gray-700 text-white border-gray-700 hover:from-gray-700 hover:to-gray-600 my-5"
             onClick={isLoginForm ? handleLogin : handleSignup}
           >
-            <svg
-              aria-label="Email icon"
-              width="16"
-              height="16"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-            >
-              <g
-                strokeLinejoin="round"
-                strokeLinecap="round"
-                strokeWidth="2"
-                fill="none"
-                stroke="black"
-              >
-                <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-              </g>
-            </svg>
-            {isLoginForm ? "Login" : "Sign Up"}
+            {isLoginForm ? "</> Login" : "👩🏻‍💻 Sign Up"}
           </button>
+          {isLoginForm && (
+            <>
+              <div
+                className="text-center text-md text-gray-800 mb-2 cursor-pointer"
+                onClick={() => navigate("/forgot-password")}
+              >
+                forgot you password?
+              </div>
+            </>
+          )}
           <div
             onClick={() => setIsLoginForm(!isLoginForm)}
             className="text-center text-sm text-gray-500 cursor-pointer"
