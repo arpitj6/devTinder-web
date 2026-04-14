@@ -6,9 +6,15 @@ import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../utils/constants";
 
 const Login = () => {
-  const [email, setEmail] = useState("rohit@gmail.com");
-  const [password, setPassword] = useState("Rohit@123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [gender, setGender] = useState("male");
+  const [about, setAbout] = useState("");
+  const [photoUrl, setPhotoUrl] = useState("");
   const [error, setError] = useState("");
+  const [isLoginForm, setIsLoginForm] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -23,9 +29,31 @@ const Login = () => {
         { withCredentials: true },
       );
       dispatch(addUser(res.data));
-      navigate("/feed");
+      navigate("/");
     } catch (err) {
       setError(err.response.data.message || "Login failed. Please try again.");
+    }
+  };
+
+  const handleSignup = async () => {
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/signup`,
+        {
+          emailId: email,
+          password: password,
+          firstName: firstName,
+          lastName: lastName,
+          gender: gender,
+          photoUrl: photoUrl || undefined,
+          about: about || undefined,
+        },
+        { withCredentials: true },
+      );
+      dispatch(addUser(res.data.data));
+      navigate("/profile");
+    } catch (err) {
+      setError(err.response.data.message || "Signup failed. Please try again.");
     }
   };
 
@@ -33,10 +61,13 @@ const Login = () => {
     <div className="flex justify-center my-10">
       <div className="card bg-base-300 w-96 shadow-sm">
         <div className="card-body ">
-          <h2 className="card-title flex justify-center text-xl  font-bold">
-            Login
+          <h2 className="card-title flex justify-center text-xl  font-bold mt-5">
+            Welcome to devTinder
           </h2>
-
+          <p className="text-center text-gray-400 text-sm">
+            Swipe. Connect. Code together.
+          </p>
+          {/* email */}
           <label className="input validator w-full">
             <svg
               className="h-[1em] opacity-50"
@@ -54,6 +85,7 @@ const Login = () => {
                 <circle cx="12" cy="7" r="4"></circle>
               </g>
             </svg>
+
             <input
               type="text"
               required
@@ -66,7 +98,6 @@ const Login = () => {
               value={email}
             />
           </label>
-
           {/* password */}
           <label className="input validator w-full">
             <svg
@@ -97,12 +128,120 @@ const Login = () => {
             />
           </label>
 
-          {error && <div className="text-red-500">{error}</div>}
+          {/* FirstName & lastname for signup form*/}
+          {!isLoginForm && (
+            <>
+              <label className="input validator w-full">
+                <svg
+                  className="h-[1em] opacity-50"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                >
+                  <g
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    strokeWidth="2.5"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </g>
+                </svg>
 
+                <input
+                  type="text"
+                  required
+                  placeholder="First Name"
+                  pattern="[A-Za-z][A-Za-z0-9\-]*"
+                  minLength="3"
+                  maxLength="30"
+                  title="Only letters, numbers or dash"
+                  onChange={(e) => setFirstName(e.target.value)}
+                  value={firstName}
+                />
+              </label>
+
+              <label className="input validator w-full">
+                <svg
+                  className="h-[1em] opacity-50"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                >
+                  <g
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    strokeWidth="2.5"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </g>
+                </svg>
+
+                <input
+                  type="text"
+                  required
+                  placeholder="Last Name"
+                  pattern="[A-Za-z][A-Za-z0-9\-]*"
+                  minLength="3"
+                  maxLength="30"
+                  title="Only letters, numbers or dash"
+                  onChange={(e) => setLastName(e.target.value)}
+                  value={lastName}
+                />
+              </label>
+
+              {/* gender */}
+
+              <label className="w-full">
+                <select
+                  className="select w-full pl-3"
+                  onChange={(e) => setGender(e.target.value)}
+                  value={gender}
+                >
+                  <option value="male">♂ Male</option>
+                  <option value="female">♀ Female</option>
+                  <option value="others">⚧ Other</option>
+                </select>
+              </label>
+
+              <label className="input validator w-full">
+                <svg
+                  className="h-[1em] opacity-50"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                >
+                  <g
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    strokeWidth="2.5"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </g>
+                </svg>
+
+                <input
+                  type="text"
+                  required
+                  placeholder="Photo URL"
+                  minLength="3"
+                  title="Only letters, numbers or dash"
+                  onChange={(e) => setPhotoUrl(e.target.value)}
+                  value={photoUrl}
+                />
+              </label>
+            </>
+          )}
+
+          {error && <div className="text-red-500">{error}</div>}
           <button
-            className="btn w-full bg-gradient-to-r from-gray-800 to-gray-700 text-white border-gray-700 hover:from-gray-700 hover:to-gray-600"
-            disabled={!email || !password}
-            onClick={handleLogin}
+            className="btn w-full bg-gradient-to-r from-gray-800 to-gray-700 text-white border-gray-700 hover:from-gray-700 hover:to-gray-600 my-5"
+            onClick={isLoginForm ? handleLogin : handleSignup}
           >
             <svg
               aria-label="Email icon"
@@ -122,8 +261,16 @@ const Login = () => {
                 <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
               </g>
             </svg>
-            Login
+            {isLoginForm ? "Login" : "Sign Up"}
           </button>
+          <div
+            onClick={() => setIsLoginForm(!isLoginForm)}
+            className="text-center text-sm text-gray-500 cursor-pointer"
+          >
+            {isLoginForm
+              ? "New User ? SignUp here!"
+              : "Exisiting User, Login here!"}{" "}
+          </div>
         </div>
       </div>
     </div>

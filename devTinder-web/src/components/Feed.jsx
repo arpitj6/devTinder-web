@@ -23,9 +23,20 @@ const Feed = () => {
     getFeed();
   }, []);
 
+  if (feed?.length === 0 || !feed) {
+    return (
+      <div className="text-center mt-10 text-gray-500">
+        No more developers to show 🚀
+      </div>
+    );
+  }
+
   return (
     feed && (
-      <div className="feed">
+      <div className="feed my-2">
+        <h2 className="text-md font-bold mb-2 text-center">
+          Discover People 🌍
+        </h2>
         <UserCard user={feed[0]} />
       </div>
     )

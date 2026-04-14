@@ -13,11 +13,13 @@ const EditProfile = ({ user }) => {
   const [gender, setGender] = useState(user?.gender || "");
   const [photoUrl, setPhotoUrl] = useState(user?.photoUrl || "");
   const [showMessage, setShowMessage] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const dispatch = useDispatch();
 
   const handleSaveProfile = async () => {
     setError("");
+    setLoading(true);
     try {
       const res = await axios.post(
         BASE_URL + "/profile/edit",
@@ -32,6 +34,7 @@ const EditProfile = ({ user }) => {
         { withCredentials: true },
       );
       if (res) {
+        setLoading(false);
         dispatch(addUser(res?.data?.data));
         setShowMessage(true);
         setTimeout(() => {
@@ -39,6 +42,7 @@ const EditProfile = ({ user }) => {
         }, 3000);
       }
     } catch (err) {
+      setLoading(false);
       console.log(err);
       setError(
         err?.response?.message || "Failed to save profile. Please try again.",
@@ -63,11 +67,11 @@ const EditProfile = ({ user }) => {
               d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <span>Your profile has been updated successfully!</span>
+          <span>Your profile has been updated successfully ✅</span>
         </div>
       )}
 
-      <div className="flex justify-center my-20 gap-20">
+      <div className="flex justify-center my-10 gap-20">
         <div className="flex justify-center ">
           <div className="card bg-base-300 w-96 shadow-sm">
             <div className="card-body ">
@@ -105,26 +109,26 @@ const EditProfile = ({ user }) => {
 
               <label className="input validator w-full">
                 <input
-                  type="text"
+                  type="number"
                   required
                   placeholder="age"
-                  pattern="[A-Za-z][A-Za-z0-9\-]*"
-                  minLength="3"
-                  maxLength="30"
+                  pattern="[0-9]*"
+                  minLength="1"
+                  maxLength="3"
                   title="Only letters, numbers or dash"
                   onChange={(e) => setAge(e.target.value)}
                   value={age}
                 />
               </label>
 
-                <fieldset className="fieldset">
-                  <textarea
-                    className="textarea h-24 w-full pl-3 pt-3"
-                    placeholder="your Bio"
-                    onChange={(e) => setAbout(e.target.value)}
-                    value={about}
-                  ></textarea>
-                </fieldset>
+              <fieldset className="fieldset">
+                <textarea
+                  className="textarea h-24 w-full pl-3 pt-3"
+                  placeholder="your Bio"
+                  onChange={(e) => setAbout(e.target.value)}
+                  value={about}
+                ></textarea>
+              </fieldset>
 
               <label className="w-full">
                 <select
@@ -132,9 +136,9 @@ const EditProfile = ({ user }) => {
                   onChange={(e) => setGender(e.target.value)}
                   value={gender}
                 >
-                  <option>male</option>
-                  <option>female</option>
-                  <option>others</option>
+                  <option value="male">♂ Male</option>
+                  <option value="female">♀ Female</option>
+                  <option value="others">⚧ Other</option>
                 </select>
               </label>
               <label className="input validator w-full">
@@ -142,9 +146,8 @@ const EditProfile = ({ user }) => {
                   type="text"
                   required
                   placeholder="photoUrl"
-                  pattern="[A-Za-z][A-Za-z0-9\-]*"
                   minLength="3"
-                  maxLength="3000"
+                  maxLength="6000"
                   title="Only letters, numbers or dash"
                   onChange={(e) => setPhotoUrl(e.target.value)}
                   value={photoUrl}
@@ -154,10 +157,11 @@ const EditProfile = ({ user }) => {
               {error && <div className="text-red-500">{error}</div>}
 
               <button
-                className="btn w-full bg-gradient-to-r from-gray-800 to-gray-700 text-white border-gray-700 hover:from-gray-700 hover:to-gray-600 my-10"
+                className="btn w-full mt-4 bg-gradient-to-r from-gray-800 to-gray-700 text-white hover:from-gray-700 hover:to-gray-600"
                 onClick={handleSaveProfile}
+                disabled={loading}
               >
-                save profile
+                {loading ? "Saving..." : "Save Profile"}
               </button>
             </div>
           </div>
