@@ -1,22 +1,28 @@
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { BASE_URL } from "../../utils/constants";
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { BASE_URL } from "../../utils/constants";
 import { addConections } from "../../utils/connectionsSlice";
 
 const Connections = () => {
   const dispatch = useDispatch();
   const connections = useSelector((store) => store.connections);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchConnections = async () => {
+    setIsLoading(true);
+
     try {
-      const res = await axios.get(BASE_URL + "/user/connections", {
+      const res = await axios.get(`${BASE_URL}/user/connections`, {
         withCredentials: true,
       });
 
       dispatch(addConections(res?.data?.data || []));
     } catch (err) {
       console.log(err);
+      dispatch(addConections([]));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -26,23 +32,44 @@ const Connections = () => {
 
   if (!connections) return null;
 
+  if (isLoading) {
+    return (
+      <div className="mx-auto mt-10 max-w-3xl">
+        <h1 className="mb-8 text-center text-3xl font-bold">
+          Your Connections
+        </h1>
+        <div className="space-y-4">
+          {[...Array(3)].map((_, index) => (
+            <div
+              key={index}
+              className="flex items-center gap-5 rounded-xl bg-base-200 p-4 shadow-md"
+            >
+              <div className="skeleton h-16 w-16 rounded-full"></div>
+              <div className="flex-1 space-y-2">
+                <div className="skeleton h-4 w-40"></div>
+                <div className="skeleton h-4 w-28"></div>
+                <div className="skeleton h-4 w-52"></div>
+              </div>
+              <div className="skeleton h-8 w-28"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   if (connections.length === 0) {
     return (
-      <div className="text-center mt-10 text-xl font-semibold text-gray-500">
-        No connections yet 🤝
+      <div className="mt-10 text-center text-xl font-semibold text-gray-500">
+        No connections yet.
       </div>
     );
   }
 
   return (
-    <div className="max-w-3xl mx-auto mt-10">
+    <div className="mx-auto mt-10 max-w-3xl">
+      <h1 className="mb-8 text-center text-3xl font-bold">Your Connections</h1>
 
-      {/* Page Title */}
-      <h1 className="text-3xl font-bold text-center mb-8">
-        Your Connections 🤝
-      </h1>
-
-      {/* Connections List */}
       <div className="flex flex-col gap-4">
         {connections.map((connection) => {
           const { _id, firstName, lastName, photoUrl, gender, age, about } =
@@ -51,40 +78,33 @@ const Connections = () => {
           return (
             <div
               key={_id}
-              className="flex items-center gap-5 p-4 rounded-xl shadow-md bg-base-200 hover:shadow-xl transition"
+              className="flex items-center gap-5 rounded-xl bg-base-200 p-4 shadow-md transition hover:shadow-xl"
             >
-
-              {/* Profile Image */}
               <img
-                className="w-16 h-16 rounded-full object-cover"
+                className="h-16 w-16 rounded-full object-cover"
                 src={photoUrl}
                 alt="profile"
               />
 
-              {/* User Info */}
               <div className="flex-1">
-
                 <h2 className="text-lg font-semibold">
                   {firstName} {lastName}
                 </h2>
 
                 <p className="text-sm text-gray-500">
-                  {gender === "male" ? "♂️ Male" : "♀️ Female"} • {age} years
+                  {gender === "male" ? "Male" : "Female"} • {age} years
                 </p>
 
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="mt-1 text-sm text-gray-600">
                   {about || "No bio available"}
                 </p>
-
               </div>
 
-              {/* Action Buttons */}
               <div className="flex gap-2">
-                <button className="btn btn-sm btn-outline">
+                <button className="btn btn-sm btn-outline" type="button">
                   View Profile
                 </button>
               </div>
-
             </div>
           );
         })}
