@@ -67,7 +67,7 @@ const Connections = () => {
   }
 
   return (
-    <div className="mx-auto mt-10 max-w-3xl">
+    <div className="mx-auto mt-10 mb-20 max-w-3xl">
       <h1 className="mb-8 text-center text-3xl font-bold">Your Connections</h1>
 
       <div className="flex flex-col gap-4">

@@ -121,6 +121,12 @@ const Login = () => {
   const toggleFormMode = () => {
     setIsLoginForm((prev) => !prev);
     setError("");
+
+    setPhotoUrl("");
+    setEmail("");
+    setPassword("");
+    setFirstName("");
+    setLastName("");
   };
 
   return (
@@ -321,7 +327,7 @@ const Login = () => {
               className="mb-2 cursor-pointer text-center text-md text-gray-800"
               onClick={() => navigate("/forgot-password")}
             >
-              Forgot your password?
+              change your password?
             </div>
           )}
 

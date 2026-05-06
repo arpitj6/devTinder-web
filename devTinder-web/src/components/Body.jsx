@@ -18,11 +18,20 @@ const Body = () => {
       const res = await axios.get(`${BASE_URL}/profile/view`, {
         withCredentials: true,
       });
-      dispatch(addUser(res?.data));
+
+      const isValid = res?.data &&
+        typeof res.data === "object" &&
+        !res.data.includes?.("<!doctype html"); // catches HTML fallback
+
+      if (!isValid) {
+        throw new Error("Invalid response from server");
+      }
+      dispatch(addUser(res.data));
     } catch (err) {
       if (err.status === 401) {
         navigate("/login");
       }
+      navigate("/login");
     }
   };
 
